@@ -144,10 +144,12 @@ public class TempDescend
 						default:
 						{
 							System.out.println("What were you thinking? You died!");
+							Rest();
 							break;
 						}
 					}
 				}
+				
 				
 				if(enemy.HP[enepos] <= 0)
 				{
@@ -163,6 +165,8 @@ public class TempDescend
 					System.out.println("That must've been a hard battle, nice try.");
 					Rest();
 				}
+				
+				replenishEnemy();
 				
 				System.out.println("Do you wish to continue down this path, or go back to town?");
 				System.out.println("Proceed further? (y/n)");
@@ -193,7 +197,7 @@ public class TempDescend
 	private static void Surface()
 	{
 		Player player = new Player();
-		System.out.println("You go back to the surface, with the smell of the descend departing from your body with each step you take further away from it.");
+		System.out.println("You are back at the surface, with the smell of the descend departing from your body with each step you take further away from it.");
 		System.out.println("Do you wish to go to town, or take some rest before continuing the descend?");
 		System.out.println("1. Go to Town.");
 		System.out.println("2. Take some rest.");
@@ -204,7 +208,10 @@ public class TempDescend
 			Rest();
 		else
 		if(player.HP < 30)
+		{
 			System.out.println("You faint from your injuries due to your indecision.");
+			Rest();
+		}
 		else
 			System.out.println("You can't make up your mind and as such, go back down the descend.");
 		Level1();
@@ -253,6 +260,7 @@ public class TempDescend
 				stay = false;
 			}
 		}
+		Surface();
 	}
 	
 	private static void Rest()
@@ -268,6 +276,7 @@ public class TempDescend
 			System.out.println("...healed.");
 //			player.MP = Player.MPP;
 //			System.out.println("...mana restored.");
+			Surface();
 		}
 		else
 		{
@@ -346,10 +355,16 @@ public class TempDescend
 		System.out.println("Because, right now, the merchant doesn't even exist.");
 	}
 	
+	private static void replenishEnemy()
+	{
+		Enemy enemy = new Enemy();
+		enemy.BattleHP = enemy.HP;
+	}
+	
 	static class Player
 	{
 		static int HPP = 100;
-//		int MPP = 70;
+		//		int MPP = 70;
 		int HP = 100, Atk = 20, Money = 0, numBattles = 0;
 		int numOfHealPot = 3;
 		String potions = "Small Health Potions";
@@ -361,6 +376,7 @@ public class TempDescend
 	static class Enemy
 	{
 		int[] HP = {70, 30, 50};
+		int[] BattleHP = {70, 30, 50};
 		int[][] Atk = {{12, 13, 15, 14, 16}, {10, 13, 16}, {23, 14, 28}};
 		String[][] AtkNames = {{"Dash", "Pound", "Punch", "Throw", "Strike"}, {"Snatch", "Swipe", "Scratch"}, {"Chomp", "Chase", "Bite"}};
 		String[] Name = {"Goon", "Rat", "Rapid Dog"};

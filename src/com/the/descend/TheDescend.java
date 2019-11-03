@@ -253,6 +253,7 @@ public class TheDescend
 				stay = false;
 			}
 		}
+		Surface();
 	}
 	
 	private static void Rest()
