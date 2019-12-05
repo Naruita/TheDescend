@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
-public class TheDescend
+public class TempDescend
 {
 	public static void main(String[] args)
 	{
-		TheDescend TD = new TheDescend();
+		TempDescend TD = new TempDescend();
 		clear();
 		TD.Intro();
 		//TD.UpdateStats();
@@ -74,7 +74,7 @@ public class TheDescend
 				System.out.println("It's a " + currentEnemy);
 				
 				FIGHT:
-				while(enemy.HP[enepos] > 0)
+				while(enemy.BattleHP[enepos] > 0)
 				{
 					if(player.HP < 0)
 					{
@@ -92,7 +92,7 @@ public class TheDescend
 						case 1:
 						{
 							System.out.println("You attack the enemy for " + player.Atk + " damage.");
-							enemy.HP[enepos] = enemy.HP[enepos] - player.Atk;
+							enemy.BattleHP[enepos] = enemy.BattleHP[enepos] - player.Atk;
 							enemyDmg = enemy.Atk[enepos][rand.nextInt(enemy.Atk.length)];
 							for(int i = 0; i < enemy.Name.length; i++)
 							{
@@ -102,11 +102,11 @@ public class TheDescend
 							System.out.println(enemy.Name[enepos] + " executes the attack " + enemy.AtkNames[enepos][atkpos]);
 							System.out.println("The enemy does " + enemyDmg + " damage to you.");
 							player.HP = player.HP - enemyDmg;
-							if(enemy.HP[enepos] < 0)
+							if(enemy.BattleHP[enepos] < 0)
 							{
-								enemy.HP[enepos] = 0;
+								enemy.BattleHP[enepos] = 0;
 							}
-							System.out.println("Your HP : " + player.HP + ", the enemy's HP : " + enemy.HP[enepos]);
+							System.out.println("Your HP : " + player.HP + ", the enemy's HP : " + enemy.BattleHP[enepos]);
 							break;
 						}
 						case 2:
@@ -125,12 +125,12 @@ public class TheDescend
 						{
 							System.out.println("Your Status : ");
 							System.out.println("> Health Points : " + player.HP);
-							System.out.println("> Enemy's Health Points : " + enemy.HP[enepos]);
+							System.out.println("> Enemy's Health Points : " + enemy.BattleHP[enepos]);
 							break;
 						}
 						case 4:
 						{
-							int manage = rand.nextInt(enemy.HP.length);
+							int manage = rand.nextInt(enemy.BattleHP.length);
 							if(manage < 2)
 							{
 								System.out.println("You fail in running away.");
@@ -144,17 +144,19 @@ public class TheDescend
 						default:
 						{
 							System.out.println("What were you thinking? You died!");
+							Rest();
 							break;
 						}
 					}
 				}
 				
-				if(enemy.HP[enepos] <= 0)
+				
+				if(enemy.BattleHP[enepos] <= 0)
 				{
 					System.out.println("---------------------------------------------");
 					System.out.println("You have defeated the enemy.");
 				}
-				else if(enemy.HP[enepos] > 0 && alive)
+				else if(enemy.BattleHP[enepos] > 0 && alive)
 				{
 					System.out.println("You've run away from a battle?");
 				}
@@ -163,6 +165,8 @@ public class TheDescend
 					System.out.println("That must've been a hard battle, nice try.");
 					Rest();
 				}
+				
+				replenishEnemy(enepos);
 				
 				System.out.println("Do you wish to continue down this path, or go back to town?");
 				System.out.println("Proceed further? (y/n)");
@@ -177,11 +181,12 @@ public class TheDescend
 				Surface();
 			}
 		}
-		
-/*
-		System.out.println("You reach the first stop in the descend, as you find yourself at a crossroads.");
-		System.out.println("There are two different ways to go, left or right?");
-*/
+		else
+		{
+			System.out.println("You reach the first stop in the descend, as you find yourself at a crossroads.");
+			System.out.println("There are two different ways to go, left or right?");
+			System.out.println("Which one do you pick?");
+		}
 	}
 	
 	static private void Level2()
@@ -193,7 +198,7 @@ public class TheDescend
 	private static void Surface()
 	{
 		Player player = new Player();
-		System.out.println("You go back to the surface, with the smell of the descend departing from your body with each step you take further away from it.");
+		System.out.println("You are back at the surface, with the smell of the descend departing from your body with each step you take further away from it.");
 		System.out.println("Do you wish to go to town, or take some rest before continuing the descend?");
 		System.out.println("1. Go to Town.");
 		System.out.println("2. Take some rest.");
@@ -204,7 +209,10 @@ public class TheDescend
 			Rest();
 		else
 		if(player.HP < 30)
+		{
 			System.out.println("You faint from your injuries due to your indecision.");
+			Rest();
+		}
 		else
 			System.out.println("You can't make up your mind and as such, go back down the descend.");
 		Level1();
@@ -348,6 +356,12 @@ public class TheDescend
 		System.out.println("Because, right now, the merchant doesn't even exist.");
 	}
 	
+	private static void replenishEnemy(int enepos)
+	{
+		Enemy enemy = new Enemy();
+		enemy.BattleHP[enepos] = Enemy.HP[enepos];
+	}
+	
 	static class Player
 	{
 		static int HPP = 100;
@@ -362,9 +376,12 @@ public class TheDescend
 	
 	static class Enemy
 	{
-		int[] HP = {70, 30, 50};
+		static int[] HP = {70, 30, 50};
+		int[] BattleHP = {70, 30, 50};
 		int[][] Atk = {{12, 13, 15, 14, 16}, {10, 13, 16}, {23, 14, 28}};
 		String[][] AtkNames = {{"Dash", "Pound", "Punch", "Throw", "Strike"}, {"Snatch", "Swipe", "Scratch"}, {"Chomp", "Chase", "Bite"}};
 		String[] Name = {"Goon", "Rat", "Rapid Dog"};
 	}
+	
+	
 }
